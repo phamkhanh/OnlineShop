@@ -80,10 +80,6 @@
       <Project>{06aa4b3e-7abd-43f9-aedc-e4fd016d8767}</Project>
       <Name>App.Service</Name>
     </ProjectReference>
-    <ProjectReference Include="..\App.Web\App.Web.csproj">
-      <Project>{de57bb75-fa85-45f0-a43a-873eb5c0b6e3}</Project>
-      <Name>App.Web</Name>
-    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
