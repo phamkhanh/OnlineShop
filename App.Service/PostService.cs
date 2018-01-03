@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using App.Data.Infrastructure;
 using App.Data.Repositories;
 using App.Model.Models;
-using System.Linq;
 
 namespace App.Service
 {
@@ -21,6 +19,8 @@ namespace App.Service
 
         IEnumerable<Post> GetAllPaging(int page, int pageSize, out int totalRow);
 
+        IEnumerable<Post> GetAllByCategoryPaging(int categoryId, int page, int pageSize, out int totalRow);
+
         IEnumerable<Post> GetAllByTagPaging(string tag, int page, int pageSize, out int totalRow);
 
         void SaveChanges();
@@ -28,8 +28,8 @@ namespace App.Service
 
     public class PostService : IPostService
     {
-        IPostRepository _postRepository;
-        IUnitOfWork _unitOfWork;
+        private IPostRepository _postRepository;
+        private IUnitOfWork _unitOfWork;
 
         public PostService(IPostRepository postRepository, IUnitOfWork unitOfWork)
         {
@@ -52,10 +52,15 @@ namespace App.Service
             return _postRepository.GetAll(new string[] { "PostCategory" });
         }
 
+        public IEnumerable<Post> GetAllByCategoryPaging(int categoryId, int page, int pageSize, out int totalRow)
+        {
+            return _postRepository.GetMultiPaging(x => x.Status && x.CategoryID == categoryId, out totalRow, page, pageSize, new string[] { "PostCategory" });
+        }
+
         public IEnumerable<Post> GetAllByTagPaging(string tag, int page, int pageSize, out int totalRow)
         {
             //TODO: select all post by tag
-            return _postRepository.GetMultiPaging(x => x.Status, out totalRow, page, pageSize);
+            return _postRepository.GetAllByTag(tag, page, pageSize, out totalRow);
         }
 
         public IEnumerable<Post> GetAllPaging(int page, int pageSize, out int totalRow)
