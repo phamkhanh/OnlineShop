@@ -1,39 +1,96 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using App.Model.Models;
+using App.Service;
+using App.Web.Infrastructure.Core;
 
 namespace App.Web.Api
 {
-    public class PostCategoryController : ApiController
+    [RoutePrefix("api/postcategory")]
+    public class PostCategoryController : ApiControllerBase
     {
-        // GET api/<controller>
-        public IEnumerable<string> Get()
+        private IPostCategoryService _postCategoryService;
+
+        public PostCategoryController(IErrorService errorService, IPostCategoryService postCategoryService) : base(errorService)
         {
-            return new string[] { "value1", "value2" };
+            this._postCategoryService = postCategoryService;
         }
 
-        // GET api/<controller>/5
-        public string Get(int id)
+        public HttpResponseMessage Post(HttpRequestMessage request, PostCategory postCategory)
         {
-            return "value";
+            return CreateHttpResponse(request, () =>
+            {
+                HttpResponseMessage responseMessage = null;
+                if (ModelState.IsValid)
+                {
+                    request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState);
+                }
+                else
+                {
+                    postCategory = _postCategoryService.Add(postCategory);
+                    _postCategoryService.Save();
+                    responseMessage = request.CreateResponse(HttpStatusCode.Created, postCategory);
+                }
+                return responseMessage;
+            });
         }
 
-        // POST api/<controller>
-        public void Post([FromBody]string value)
+        public HttpResponseMessage Put(HttpRequestMessage request, PostCategory postCategory)
         {
+            return CreateHttpResponse(request, () =>
+            {
+                HttpResponseMessage responseMessage = null;
+                if (ModelState.IsValid)
+                {
+                    request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState);
+                }
+                else
+                {
+                    _postCategoryService.Update(postCategory);
+                    _postCategoryService.Save();
+                    responseMessage = request.CreateResponse(HttpStatusCode.OK);
+                }
+                return responseMessage;
+            });
         }
 
-        // PUT api/<controller>/5
-        public void Put(int id, [FromBody]string value)
+        public HttpResponseMessage Delete(HttpRequestMessage request, int id)
         {
+            return CreateHttpResponse(request, () =>
+            {
+                HttpResponseMessage responseMessage = null;
+                if (ModelState.IsValid)
+                {
+                    request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState);
+                }
+                else
+                {
+                    _postCategoryService.Delete(id);
+                    _postCategoryService.Save();
+                    responseMessage = request.CreateResponse(HttpStatusCode.OK);
+                }
+                return responseMessage;
+            });
         }
 
-        // DELETE api/<controller>/5
-        public void Delete(int id)
+        [Route("getall")]
+        public HttpResponseMessage Get(HttpRequestMessage request)
         {
+            return CreateHttpResponse(request, () =>
+            {
+                HttpResponseMessage responseMessage = null;
+                if (ModelState.IsValid)
+                {
+                    request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState);
+                }
+                else
+                {
+                    var listPostCategory = _postCategoryService.GetAll();
+                    responseMessage = request.CreateResponse(HttpStatusCode.OK, listPostCategory);
+                }
+                return responseMessage;
+            });
         }
     }
 }
