@@ -128,7 +128,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Api\PostCategoryController.cs" />
+    <Compile Include="api\PostCategoryController.cs" />
+    <Compile Include="api\TestApiController.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
